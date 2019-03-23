@@ -59,8 +59,10 @@ import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
@@ -70,7 +72,9 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.joml.Matrix4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -88,6 +92,7 @@ public class Main {
   private int glVertexVboName;
   private int glColorVboName;
   private int glVaoName;
+  private int glUniformName;
 
   public void run() throws IOException {
     System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -179,6 +184,7 @@ public class Main {
     createVertexVbo();
     createColorVbo();
     bindVboToVao();
+//    createMatrixUniform();
   }
 
   private void createVertexVbo() {
@@ -200,7 +206,13 @@ public class Main {
   }
 
   private void createMatrixUniform() {
-    
+    var matrix = new Matrix4f();
+    glUniformName = glGetUniformLocation(glShaderProgramName, "projectionMatrix");
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      FloatBuffer fb = stack.mallocFloat(16);
+      matrix.get(fb);
+      glUniformMatrix4fv(glUniformName, false, fb);
+    }
   }
 
   private void createColorVbo() {
@@ -227,6 +239,8 @@ public class Main {
   private void bindVboToVao() {
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
     glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
   }
