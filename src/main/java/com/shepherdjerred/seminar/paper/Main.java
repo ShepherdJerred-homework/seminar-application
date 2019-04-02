@@ -36,6 +36,8 @@ public class Main {
       drawer.draw();
       drawer.update();
       window.update();
+
+      Thread.sleep(10);
     }
   }
 

@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import java.time.Instant;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
@@ -42,7 +43,7 @@ public class Drawer {
   }
 
   public void draw() {
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
   }
 
   public void update() {
@@ -61,10 +62,14 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
 
     float[] vertices = new float[] {
-        -0.5f, 0.5f, -10f,
-        -0.5f, -0.5f, -10f,
-        0.5f, -0.5f, -10f,
-        0.5f, 0.5f, -10f
+        -0.5f, 0.5f, -.5f,
+        -0.5f, -0.5f, -.5f,
+        0.5f, -0.5f, -.5f,
+        0.5f, 0.5f, -.5f,
+        -0.5f, 0.5f, -1f,
+        -0.5f, -0.5f, -1f,
+        0.5f, -0.5f, -1f,
+        0.5f, 0.5f, -1f
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -84,9 +89,13 @@ public class Drawer {
 
     float[] color = new float[] {
         1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1
+        0, 1, 0, 1,
+        0, 0, 1, 1,
+        1, 1, 0, 1,
+        0, 0, 0, 1,
+        0, 0, 0, 1,
+        1, 1, 1, 1,
+        1, 1, 1, 1
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -106,7 +115,17 @@ public class Drawer {
 
     int[] indices = new int[] {
         0, 1, 2,
-        0, 2, 3
+        0, 2, 3,
+        4, 5, 6,
+        4, 6, 7,
+        0, 1, 5,
+        0, 4, 5,
+        2, 3, 6,
+        3, 6, 7,
+        1, 2, 5,
+        2, 5, 6,
+        0, 4, 7,
+        0, 2, 7
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -119,12 +138,25 @@ public class Drawer {
   }
 
   public Matrix4f getModelMatrix() {
+    var time = Instant.now().getNano();
+    var f = 1 + time * .3f;
     return new Matrix4f()
-        .translate(modelPosition.getX(), modelPosition.getY(), modelPosition.getZ())
-        .rotateX((float) Math.toRadians(modelRotationX))
-        .rotateY((float) Math.toRadians(modelRotationY))
-        .rotateZ((float) Math.toRadians(modelRotationZ))
-        .scale(modelScale);
+        .translate(0, 0, -4)
+        .rotate(time * 45f, 0, 1f, 0)
+        .rotate(time * 21f, 1f, 0, 0)
+        .translate((float) Math.sin(2.1f * f) * 2f,
+            (float) Math.cos(1.7f * f) * 2f,
+            (float) Math.sin(1.3f * f) *  (float) Math.cos(1.5f * f) * 2f);
+
+//    return new Matrix4f()
+//        .translationRotateScale(modelPosition.getX(),
+//            modelPosition.getY(),
+//            modelPosition.getZ() - 10,
+//            (float) Math.toRadians(modelRotationX),
+//            (float) Math.toRadians(modelRotationY),
+//            (float) Math.toRadians(modelRotationZ),
+//            1,
+//            modelScale, modelScale, modelScale);
   }
 
   public Matrix4f getProjectionMatrix(float aspectRatio) {
