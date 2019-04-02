@@ -73,8 +73,11 @@ public class Window {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
+    // Get the resolution of the primary monitor
+    GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
     // Create the window
-    window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+    window = glfwCreateWindow(vidmode.width() / 2, vidmode.height() / 2, "3D Rendering with OpenGL", NULL, NULL);
     if (window == NULL) {
       throw new RuntimeException("Failed to create the GLFW window");
     }
@@ -93,9 +96,6 @@ public class Window {
 
       // Get the window size passed to glfwCreateWindow
       glfwGetWindowSize(window, pWidth, pHeight);
-
-      // Get the resolution of the primary monitor
-      GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
       // Center the window
       glfwSetWindowPos(

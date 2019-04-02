@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
 public class Drawer {
@@ -81,5 +82,13 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
     glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
+  }
+
+  public Matrix4f getModelMatrix() {
+    return new Matrix4f();
+  }
+
+  public Matrix4f getProjectionMatrix() {
+    return new Matrix4f();
   }
 }

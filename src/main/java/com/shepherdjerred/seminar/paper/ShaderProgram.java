@@ -26,6 +26,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
 public class ShaderProgram {
+
   private int glShaderProgramName;
   private int glVertexShaderName;
   private int glFragmentShaderName;
@@ -85,9 +86,16 @@ public class ShaderProgram {
     }
   }
 
-  public void createMatrixUniform() {
-    var matrix = new Matrix4f();
-    glUniformName = glGetUniformLocation(glShaderProgramName, "projectionMatrix");
+  public void setModelMatrix(Matrix4f matrix) {
+    setMatrix("modelMatrix", matrix);
+  }
+
+  public void setProjectionMatrix(Matrix4f matrix) {
+    setMatrix("projectionMatrix", matrix);
+  }
+
+  private void setMatrix(String name, Matrix4f matrix) {
+    glUniformName = glGetUniformLocation(glShaderProgramName, name);
     try (MemoryStack stack = MemoryStack.stackPush()) {
       FloatBuffer fb = stack.mallocFloat(16);
       matrix.get(fb);
