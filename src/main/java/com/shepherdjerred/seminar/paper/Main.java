@@ -24,21 +24,22 @@ public class Main {
     window.cleanup();
   }
 
-  private static void loop() {
+  private static void loop() throws InterruptedException {
     while (!window.shouldClose()) {
       window.clearScreen();
 
-      var projectionMatrix = drawer.getProjectionMatrix();
+      var projectionMatrix = drawer.getProjectionMatrix(window.getAspectRatio());
       var modelMatrix = drawer.getModelMatrix();
       shaderProgram.setProjectionMatrix(projectionMatrix);
       shaderProgram.setModelMatrix(modelMatrix);
 
       drawer.draw();
+      drawer.update();
       window.update();
     }
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     init();
     loop();
     cleanup();

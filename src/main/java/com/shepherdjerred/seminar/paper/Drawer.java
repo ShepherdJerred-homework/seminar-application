@@ -18,6 +18,15 @@ import org.lwjgl.system.MemoryStack;
 
 public class Drawer {
 
+  // https://ahbejarano.gitbook.io/lwjglgamedev/chapter6
+  private final static float FIELD_OF_VIEW = (float) Math.toRadians(60f);
+  private final static float Z_NEAR = 0.01f;
+  private final static float Z_FAR = 1000f;
+  private float modelScale = 1;
+  private float modelRotationX = 0;
+  private float modelRotationY = 0;
+  private float modelRotationZ = 0;
+  private Coordinate modelPosition = new Coordinate(0, 0, 0);
   private int glVertexVboName;
   private int glColorVboName;
   private int glVaoName;
@@ -33,6 +42,12 @@ public class Drawer {
     glDrawArrays(GL_TRIANGLES, 0, 3);
   }
 
+  public void update() {
+//    modelRotationX += .5;
+//    modelRotationY += .5;
+    modelRotationZ += .5;
+  }
+
   private void createVao() {
     glVaoName = glGenVertexArrays();
     glBindVertexArray(glVaoName);
@@ -43,9 +58,9 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
 
     float[] vertices = new float[] {
-        1, 1, 0,
-        0, 1, 0,
-        0, 0, 0
+        -0.5f, 0.5f, -10f,
+        -0.5f, -0.5f, -10f,
+        0.5f, -0.5f, -10f
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -85,10 +100,17 @@ public class Drawer {
   }
 
   public Matrix4f getModelMatrix() {
-    return new Matrix4f();
+    return new Matrix4f()
+        .translate(modelPosition.getX(), modelPosition.getY(), modelPosition.getZ())
+        .rotateX((float) Math.toRadians(modelRotationX))
+        .rotateY((float) Math.toRadians(modelRotationY))
+        .rotateZ((float) Math.toRadians(modelRotationZ))
+        .scale(modelScale);
   }
 
-  public Matrix4f getProjectionMatrix() {
-    return new Matrix4f();
+  public Matrix4f getProjectionMatrix(float aspectRatio) {
+//    return new Matrix4f();
+    return new Matrix4f()
+        .perspective(FIELD_OF_VIEW, aspectRatio, Z_NEAR, Z_FAR);
   }
 }

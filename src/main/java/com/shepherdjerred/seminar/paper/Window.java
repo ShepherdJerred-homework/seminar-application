@@ -77,7 +77,11 @@ public class Window {
     GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
     // Create the window
-    window = glfwCreateWindow(vidmode.width() / 2, vidmode.height() / 2, "3D Rendering with OpenGL", NULL, NULL);
+    window = glfwCreateWindow(vidmode.width() / 2,
+        vidmode.height() / 2,
+        "3D Graphics Rendering with OpenGL",
+        NULL,
+        NULL);
     if (window == NULL) {
       throw new RuntimeException("Failed to create the GLFW window");
     }
@@ -120,7 +124,6 @@ public class Window {
     // bindings available for use.
     GL.createCapabilities();
 
-
 //    createMatrixUniform();
   }
 
@@ -141,5 +144,20 @@ public class Window {
   public void update() {
     glfwSwapBuffers(window);
     glfwPollEvents();
+  }
+
+  public WindowSize getWindowSize() {
+    try (var stack = MemoryStack.stackPush()) {
+      IntBuffer pWidth = stack.mallocInt(1); // int*
+      IntBuffer pHeight = stack.mallocInt(1); // int*
+
+      // Get the window size passed to glfwCreateWindow
+      glfwGetWindowSize(window, pWidth, pHeight);
+      return new WindowSize(pWidth.get(), pHeight.get());
+    }
+  }
+
+  public float getAspectRatio() {
+    return (float) getWindowSize().getWidth() / getWindowSize().getHeight();
   }
 }
