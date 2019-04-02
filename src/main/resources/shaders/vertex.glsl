@@ -9,5 +9,5 @@ uniform mat4 projectionMatrix;
 
 void main() {
     gl_Position = vec4(position, 1.0);
-    color = vec4(1, 1, 1, 1);
+    color = inColor;
 }
