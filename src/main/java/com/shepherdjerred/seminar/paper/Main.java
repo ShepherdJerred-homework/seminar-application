@@ -37,7 +37,7 @@ public class Main {
       drawer.update();
       window.update();
 
-      Thread.sleep(10);
+      Thread.sleep(100);
     }
   }
 
