@@ -106,7 +106,7 @@ public class Drawer {
 
     int[] indices = new int[] {
         0, 1, 2,
-        1, 2, 3
+        0, 2, 3
     };
 
     try (var stack = MemoryStack.stackPush()) {
