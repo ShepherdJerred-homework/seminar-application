@@ -2,6 +2,7 @@ package com.shepherdjerred.seminar.paper;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -38,11 +39,10 @@ public class Drawer {
     createVertexVbo();
     createColorVbo();
     createEbo();
-    bindVboToVao();
   }
 
   public void draw() {
-    glDrawElements(GL_TRIANGLES, 6, GL_FLOAT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   }
 
   public void update() {
@@ -73,6 +73,9 @@ public class Drawer {
       vertexBuffer.flip();
       glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
     }
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+    glEnableVertexAttribArray(0);
   }
 
   private void createColorVbo() {
@@ -80,6 +83,7 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
 
     float[] color = new float[] {
+        1, 0, 0, 1,
         1, 0, 0, 1,
         1, 0, 0, 1,
         1, 0, 0, 1
@@ -91,35 +95,27 @@ public class Drawer {
       vertexBuffer.flip();
       glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
     }
+
+    glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+    glEnableVertexAttribArray(1);
   }
 
   private void createEbo() {
     glEboName = glGenBuffers();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEboName);
 
-    float[] indices = new float[] {
+    int[] indices = new int[] {
         0, 1, 2,
         1, 2, 3
     };
 
     try (var stack = MemoryStack.stackPush()) {
-      var eboBuffer = stack.mallocFloat(indices.length);
+      var eboBuffer = stack.mallocInt(indices.length);
       eboBuffer.put(indices);
       eboBuffer.flip();
       glBufferData(GL_ELEMENT_ARRAY_BUFFER, eboBuffer, GL_STATIC_DRAW);
     }
-  }
 
-  private void bindVboToVao() {
-    glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
-    glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEboName);
   }
 
   public Matrix4f getModelMatrix() {
