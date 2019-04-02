@@ -20,7 +20,6 @@ public class Drawer {
   private int glVertexVboName;
   private int glColorVboName;
   private int glVaoName;
-  private int glUniformName;
 
   public void init() {
     createVao();
@@ -33,13 +32,18 @@ public class Drawer {
     glDrawArrays(GL_TRIANGLES, 0, 3);
   }
 
+  private void createVao() {
+    glVaoName = glGenVertexArrays();
+    glBindVertexArray(glVaoName);
+  }
+
   private void createVertexVbo() {
     glVertexVboName = glGenBuffers();
     glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
 
     float[] vertices = new float[] {
-        0, 0, 0,
-        0, 0, 0,
+        1, 1, 0,
+        0, 1, 0,
         0, 0, 0
     };
 
@@ -56,7 +60,7 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
 
     float[] color = new float[] {
-        1, 1, 1, 1
+        1, 0, 0, 1
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -67,12 +71,8 @@ public class Drawer {
     }
   }
 
-  private void createVao() {
-    glVaoName = glGenVertexArrays();
-    glBindVertexArray(glVaoName);
-  }
-
   private void bindVboToVao() {
+    glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(0);
 

@@ -127,8 +127,6 @@ public class Window {
   public void cleanup() {
     glfwFreeCallbacks(window);
     glfwDestroyWindow(window);
-    glfwFreeCallbacks(window);
-    glfwDestroyWindow(window);
   }
 
   public boolean shouldClose() {
