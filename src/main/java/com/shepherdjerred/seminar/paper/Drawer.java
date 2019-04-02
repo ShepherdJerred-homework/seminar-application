@@ -60,6 +60,8 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
 
     float[] color = new float[] {
+        1, 0, 0, 1,
+        1, 0, 0, 1,
         1, 0, 0, 1
     };
 
