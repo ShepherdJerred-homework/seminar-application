@@ -2,8 +2,9 @@ package com.shepherdjerred.seminar.paper;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
@@ -30,22 +31,24 @@ public class Drawer {
   private int glVertexVboName;
   private int glColorVboName;
   private int glVaoName;
+  private int glEboName;
 
   public void init() {
     createVao();
     createVertexVbo();
     createColorVbo();
+    createEbo();
     bindVboToVao();
   }
 
   public void draw() {
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_FLOAT, 0);
   }
 
   public void update() {
 //    modelRotationX += .5;
 //    modelRotationY += .5;
-    modelRotationZ += .5;
+//    modelRotationZ += .5;
   }
 
   private void createVao() {
@@ -60,7 +63,8 @@ public class Drawer {
     float[] vertices = new float[] {
         -0.5f, 0.5f, -10f,
         -0.5f, -0.5f, -10f,
-        0.5f, -0.5f, -10f
+        0.5f, -0.5f, -10f,
+        0.5f, 0.5f, -10f
     };
 
     try (var stack = MemoryStack.stackPush()) {
@@ -89,6 +93,23 @@ public class Drawer {
     }
   }
 
+  private void createEbo() {
+    glEboName = glGenBuffers();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEboName);
+
+    float[] indices = new float[] {
+        0, 1, 2,
+        1, 2, 3
+    };
+
+    try (var stack = MemoryStack.stackPush()) {
+      var eboBuffer = stack.mallocFloat(indices.length);
+      eboBuffer.put(indices);
+      eboBuffer.flip();
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, eboBuffer, GL_STATIC_DRAW);
+    }
+  }
+
   private void bindVboToVao() {
     glBindBuffer(GL_ARRAY_BUFFER, glVertexVboName);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -97,6 +118,8 @@ public class Drawer {
     glBindBuffer(GL_ARRAY_BUFFER, glColorVboName);
     glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glEboName);
   }
 
   public Matrix4f getModelMatrix() {
@@ -109,7 +132,6 @@ public class Drawer {
   }
 
   public Matrix4f getProjectionMatrix(float aspectRatio) {
-//    return new Matrix4f();
     return new Matrix4f()
         .perspective(FIELD_OF_VIEW, aspectRatio, Z_NEAR, Z_FAR);
   }
