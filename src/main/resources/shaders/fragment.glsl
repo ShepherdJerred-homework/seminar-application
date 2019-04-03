@@ -1,12 +1,14 @@
 #version 330 core
 
 in VertexData {
-    vec4 color;
+    vec2 textureCoord;
 } inputs;
 
 out vec4 outColor;
 
+uniform sampler2D textureSampler;
+
 void main() {
-    outColor = inputs.color;
+    outColor = texture(textureSampler, inputs.textureCoord);
 }
 

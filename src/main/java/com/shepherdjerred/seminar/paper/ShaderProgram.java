@@ -102,4 +102,8 @@ public class ShaderProgram {
       glUniformMatrix4fv(glUniformName, false, fb);
     }
   }
+
+  public int getUniformLocation(String name) {
+    return glGetUniformLocation(glShaderProgramName, name);
+  }
 }
