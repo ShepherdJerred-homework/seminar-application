@@ -15,7 +15,7 @@ public class Main {
     shaderProgram = new ShaderProgram();
     shaderProgram.init();
 
-    drawer = new Drawer(shaderProgram);
+    drawer = new Drawer();
     drawer.init();
   }
 
@@ -23,7 +23,7 @@ public class Main {
     window.cleanup();
   }
 
-  private static void loop() throws InterruptedException {
+  private static void loop() {
     float elapsedTime;
     float accumulator = 0f;
     float interval = 1f / 20;

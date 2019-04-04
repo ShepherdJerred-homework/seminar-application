@@ -53,11 +53,6 @@ public class Drawer {
   private int glVaoName;
   private int glEboName;
   private int glTextureName;
-  private ShaderProgram shaderProgram;
-
-  public Drawer(ShaderProgram shaderProgram) {
-    this.shaderProgram = shaderProgram;
-  }
 
   public void init() throws Exception {
     createVao();
